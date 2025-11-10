@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const ProductController = require('../controllers/ProductController');
-const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const AuthMiddleware = require('../middleware/auth');
 const { 
   createProductValidator, 
   updateProductValidator,
@@ -31,7 +31,7 @@ router.get('/catalog/category/:categoria', ProductController.getProductsByCatego
 // ==============================================
 
 // Middleware de autenticación para todas las rutas siguientes
-router.use(authenticateToken);
+router.use(AuthMiddleware.verifyToken);
 
 // Obtener todos los productos (con filtros admin)
 router.get('/', ProductController.getAllProducts);
@@ -41,7 +41,7 @@ router.get('/:id', ProductController.getProductById);
 
 // Crear nuevo producto (solo Digitador y Gerente)
 router.post('/', 
-  authorizeRoles(['Gerente', 'Digitador']),
+  AuthMiddleware.checkRole('Gerente', 'Digitador'),
   createProductValidator,
   validateResult,
   ProductController.createProduct
@@ -49,7 +49,7 @@ router.post('/',
 
 // Actualizar producto (solo Digitador y Gerente)
 router.put('/:id',
-  authorizeRoles(['Gerente', 'Digitador']),
+  AuthMiddleware.checkRole('Gerente', 'Digitador'),
   updateProductValidator,
   validateResult,
   ProductController.updateProduct
@@ -57,7 +57,7 @@ router.put('/:id',
 
 // Eliminar producto (solo Gerente)
 router.delete('/:id',
-  authorizeRoles(['Gerente']),
+  AuthMiddleware.checkRole('Gerente'),
   ProductController.deleteProduct
 );
 
@@ -66,7 +66,7 @@ router.get('/category/:categoria', ProductController.getProductsByCategory);
 
 // Actualizar stock (para facturación - solo Cajero y Gerente)
 router.patch('/:id/stock',
-  authorizeRoles(['Gerente', 'Cajero']),
+  AuthMiddleware.checkRole('Gerente', 'Cajero'),
   ProductController.updateStock
 );
 
