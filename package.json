@@ -1,0 +1,22 @@
+﻿{
+  "name": "sistema-paints",
+  "version": "1.0.0",
+  "description": "Sistema de gestión para cadena de pinturas - Proyecto Bases de Datos II - UMES",
+  "scripts": {
+    "start": "npm run start:backend",
+    "start:backend": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "setup": "npm install && cd backend && npm install",
+    "migrate": "cd backend && npx sequelize-cli db:migrate",
+    "seed": "cd backend && npx sequelize-cli db:seed:all",
+    "backup": "cd backend && node scripts/backup.js",
+    "test": "cd backend && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/sistema-paints"
+  },
+  "keywords": ["sistema-paints", "bases-datos", "node.js", "sequelize", "express", "mysql"],
+  "author": "Estudiante UMES",
+  "license": "MIT"
+}
