@@ -257,11 +257,23 @@ const DashboardModule = {
         }
     },
 
+    // Métodos simulados para obtener no de productos
     async getProductsCount() {
         try {
-            const response = await apiClient.get('/test-models');
-            return response.table_counts.products || 0;
+            // CORREGIDO: Usar endpoint de productos real
+            const response = await apiClient.get('/api/products/catalog?limit=1000');
+
+            if (response && response.data && response.data.productos) {
+                console.log('📊 Productos obtenidos:', response.data.productos.length);
+                return response.data.productos.length;
+            }
+
+            // Fallback si falla
+            const fallbackResponse = await apiClient.get('/test-models');
+            return fallbackResponse.table_counts.products || 0;
+
         } catch (error) {
+            console.error('Error getting products count:', error);
             return 0;
         }
     },

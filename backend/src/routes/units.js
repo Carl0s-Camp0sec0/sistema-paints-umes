@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const { Unit } = require('../models');
-const { authenticateToken } = require('../middleware/auth');
+const AuthMiddleware = require('../middleware/auth');
 
 // ==============================================
 // RUTAS PÚBLICAS (sin autenticación)
@@ -42,7 +42,7 @@ router.get('/public', async (req, res) => {
 // ==============================================
 
 // Obtener todas las unidades (admin) - CON autenticación
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', AuthMiddleware.verifyToken, async (req, res) => {
   try {
     const unidades = await Unit.findAll({
       order: [['nombre_unidad', 'ASC']]
@@ -65,7 +65,7 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // Obtener unidad por ID
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', AuthMiddleware.verifyToken, async (req, res) => {
   try {
     const unidad = await Unit.findByPk(req.params.id);
 

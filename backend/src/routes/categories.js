@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const { Category } = require('../models');
-const { authenticateToken } = require('../middleware/auth');
+const AuthMiddleware = require('../middleware/auth');
 
 // ==============================================
 // RUTAS PÚBLICAS (sin autenticación)
@@ -17,7 +17,7 @@ router.get('/public', async (req, res) => {
   try {
     const categorias = await Category.findAll({
       where: { estado: 'Activo' },
-      attributes: ['id_categoria', 'nombre_categoria', 'descripcion', 'imagen_url'],
+      attributes: ['id_categoria', 'nombre_categoria', 'descripcion'],
       order: [['nombre_categoria', 'ASC']]
     });
 
@@ -42,7 +42,7 @@ router.get('/public', async (req, res) => {
 // ==============================================
 
 // Obtener todas las categorías (admin) - CON autenticación
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', AuthMiddleware.verifyToken, async (req, res) => {
   try {
     const categorias = await Category.findAll({
       order: [['nombre_categoria', 'ASC']]
@@ -65,7 +65,7 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // Obtener categoría por ID
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', AuthMiddleware.verifyToken, async (req, res) => {
   try {
     const categoria = await Category.findByPk(req.params.id);
 

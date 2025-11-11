@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const { Color } = require('../models');
-const { authenticateToken } = require('../middleware/auth');
+const AuthMiddleware = require('../middleware/auth');
 
 // ==============================================
 // RUTAS PÚBLICAS (sin autenticación)
@@ -42,7 +42,7 @@ router.get('/public', async (req, res) => {
 // ==============================================
 
 // Obtener todos los colores (admin) - CON autenticación
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', AuthMiddleware.verifyToken, async (req, res) => {
   try {
     const colores = await Color.findAll({
       order: [['nombre_color', 'ASC']]
@@ -65,7 +65,7 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // Obtener color por ID
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', AuthMiddleware.verifyToken, async (req, res) => {
   try {
     const color = await Color.findByPk(req.params.id);
 

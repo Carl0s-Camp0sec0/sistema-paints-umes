@@ -17,16 +17,27 @@ class ApiClient {
     // ==============================================
 
     /**
-     * Obtener headers con autenticación
-     */
+ * Obtener headers con autenticación
+ */
     _getAuthHeaders() {
-        const token = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
+        // Buscar token en ambas ubicaciones (igual que en authManager.getToken())
+        const token = localStorage.getItem(CONFIG.AUTH.TOKEN_KEY) ||
+            sessionStorage.getItem(CONFIG.AUTH.TOKEN_KEY);
+
         const headers = { ...this.defaultHeaders };
-        
+
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-        
+
+        // Log para debugging
+        if (CONFIG.DEBUG.SHOW_API_CALLS) {
+            console.log('Auth headers:', {
+                tokenFound: !!token,
+                tokenSource: token ? (localStorage.getItem(CONFIG.AUTH.TOKEN_KEY) ? 'localStorage' : 'sessionStorage') : 'none'
+            });
+        }
+
         return headers;
     }
 
