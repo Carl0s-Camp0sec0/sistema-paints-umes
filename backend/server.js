@@ -147,7 +147,6 @@ app.get('/test-models', async (req, res) => {
   }
 });
 
-
 // ==============================================
 // RUTAS DE LA API
 // ==============================================
@@ -158,6 +157,11 @@ const authRoutes = require('./src/routes/auth');
 // Usar rutas con prefijo
 app.use('/api/auth', authRoutes);
 app.use('/api/products', require('./src/routes/products'));
+
+// 🆕 NUEVAS RUTAS AGREGADAS:
+app.use('/api/categories', require('./src/routes/categories'));
+app.use('/api/units', require('./src/routes/units'));
+app.use('/api/colors', require('./src/routes/colors'));
 
 // Ruta de prueba protegida
 app.get('/api/protected', require('./src/middleware/auth').authenticated, (req, res) => {
@@ -220,7 +224,7 @@ async function startServer() {
     
     // Sincronizar modelos en desarrollo (crear tablas)
     if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
+      await sequelize.sync({ alter: false });
       console.log('✅ Modelos sincronizados con la base de datos');
     }
     
@@ -270,5 +274,3 @@ process.on('SIGINT', async () => {
 startServer();
 
 module.exports = app;
-
-

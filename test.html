@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔍 Test Específico - Estado Rutas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">🔍 Test Específico - Estado de Rutas API</h1>
+        
+        <div id="results" class="space-y-4"></div>
+        
+        <script>
+            const API_BASE = 'http://localhost:3000';
+            
+            // Test directo de cada ruta
+            const routes = [
+                '/api/categories',
+                '/api/units', 
+                '/api/colors',
+                '/api/products'
+            ];
+            
+            async function testRoute(route) {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'bg-white p-4 rounded-lg shadow';
+                
+                try {
+                    console.log(`🔍 Testing: ${route}`);
+                    const response = await fetch(`${API_BASE}${route}`);
+                    const data = await response.json();
+                    
+                    const success = response.ok;
+                    resultDiv.innerHTML = `
+                        <h3 class="font-bold ${success ? 'text-green-600' : 'text-red-600'}">${route}</h3>
+                        <p class="text-sm">Status: ${response.status}</p>
+                        <pre class="text-xs mt-2 bg-gray-50 p-2 rounded">${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    resultDiv.className += success ? ' border-l-4 border-green-500' : ' border-l-4 border-red-500';
+                    
+                } catch (error) {
+                    console.error(`❌ Error testing ${route}:`, error);
+                    resultDiv.innerHTML = `
+                        <h3 class="font-bold text-red-600">${route}</h3>
+                        <p class="text-sm text-red-600">ERROR: ${error.message}</p>
+                    `;
+                    resultDiv.className += ' border-l-4 border-red-500';
+                }
+                
+                document.getElementById('results').appendChild(resultDiv);
+            }
+            
+            // Test todas las rutas
+            async function runTests() {
+                for (const route of routes) {
+                    await testRoute(route);
+                }
+            }
+            
+            // Ejecutar tests al cargar
+            runTests();
+        </script>
+    </div>
+</body>
+</html>
